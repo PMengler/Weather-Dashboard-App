@@ -1,10 +1,11 @@
+var APIkey = '394144fc80ac73b599b4202e469c4af9';
 // var cityList = document.querySelector('ul');
 // var dailyWeather = document.querySelector('.card');
 // var fetchButton = document.getElementById('fetch-button');
 var searchBtn = $('#search-button');
 var clearBtn = $('#clear-button');
-var APIkey = '394144fc80ac73b599b4202e469c4af9';
 var cityInputEl = $('city-name');
+var pastSearchedEl = $('#past-searches')
 var currentCity;
 
 // Autocomplete for US Capital cities
@@ -88,14 +89,14 @@ function getApi(data) {
       currentWeatherEl.append(cityNameEl);
 
       // Current date
-      var currentCityDate = data.current.dt;
-      currentCityDate = dayjs().unix(currentCityDate).format('MM/DD/YYYY');
+      var currentCityDate = data.dt
+      currentCityDate = dayjs().format('MM/DD/YYYY');
       var currentDateEl = $('<span>');
       currentDateEl.text(' (${currentCityDate}) ');
       cityNameEl.append(currentDateEl);
 
       // Add weather emoji for weather in current weather card
-      var currentWeatherEmoji =  data.current.weather[0].icon;
+      var currentWeatherEmoji =  data.weather.icon;
       var currentWeatherEmojiEl = $('<img>');
       currentWeatherEmojiEl.attr('src', "http://openweathermap.org/img/wn/" + currentWeatherEmoji + ".png");
       cityWeatherEl.append(currentWeatherEmojiEl);
@@ -105,6 +106,12 @@ function getApi(data) {
       var currentTempEl = $('<p>');
       currentTempEl.text(`Temp: ${currentTemp}°F`)
       currentWeatherEl.append(currentTempEl);
+
+      // get current wind speed and display
+      var currentWind = data.current.wind_speed;
+      var currentWindEl = $('<p>')
+      currentWindEl.text(`Wind: ${currentWind} mph`)
+      currentWeatherEl.append(currentWindEl);
 
       // Humidity
       var currentHumidity = data.current.humidity;
@@ -120,10 +127,10 @@ function getApi(data) {
 
       // 5 - Day Forecast
       // create 5 Day Forecast <h2> card headers
-      var fiveDayForecastHeaderEl = $('#forecastHeader');
+      var forecastHeaderEl = $('#forecastHeader');
       var fiveDayHeaderEl = $('<h3>');
       fiveDayHeaderEl.text('5-Day Forecast:');
-      fiveDayForecastHeaderEl.append(fiveDayHeaderEl);
+      forecastHeaderEl.append(fiveDayHeaderEl);
 
       var fiveDayForecastEl = $('#forecast');
 
@@ -161,11 +168,29 @@ function getApi(data) {
         }
     })
   return;
-};
+}
+
+// Display search history as buttons
+function displaySearchHistory() {
+  var storedCities = JSON.parse(localStorage.getItem("cities")) || [];
+  var pastSearchesEl = $('#past-searches');
+
+  pastSearchesEl.innerHTML ='';
+
+  for (i = 0; i < storedCities.length; i++) {
+      
+      var pastCityBtn = document.createElement("button");
+      pastCityBtn.classList.add("btn", "btn-primary", "my-2", "past-city");
+      pastCityBtn.setAttribute("style", "width: 100%");
+      pastCityBtn.textContent = `${storedCities[i].city}`;
+      pastSearchedEl.append(pastCityBtn);
+  }
+  return;
+}
 
 // get city coordinates from Open Weather current weather data and send to One Call API
 function getCoordinates () {
-  var requestUrl = `https://api.openweathermap.org/data/2.5/weather?q=${currentCity}&appid=${APIkey}`;
+  var requestUrl = `https://api.openweathermap.org/data/2.5/weather?q=city&appid=${APIkey}`;
   var storedCities = JSON.parse(localStorage.getItem("cities")) || [];
 
   fetch(requestUrl)
@@ -187,7 +212,7 @@ function getCoordinates () {
       storedCities.push(cityInfo);
       localStorage.setItem("cities", JSON.stringify(storedCities));
 
-      // displaySearchHistory();
+      displaySearchHistory();
 
       return cityInfo;
     })
@@ -195,16 +220,79 @@ function getCoordinates () {
       getApi(data);
     })
     return;
-};
+}
+
+// handle requst to clear past search history
+function clearHistory (event) {
+  event.preventDefault();
+  var pastSearchesEl = $('#past-searches');
+
+  localStorage.removeItem("cities");
+  pastSearchesEl.innerHTML ='';
+
+  return;
+}
+
+function clearCurrentWeather () {
+  var currentWeatherEl = $("#current-weather");
+  currentWeatherEl.innerHTML = '';
+
+  var forecastHeaderEl = $("#forecastHeader");
+  forecastHeaderEl.innerHTML = '';
+
+  var forecastEl = $("#forecast");
+  forecastEl.innerHTML = '';
+
+  return;
+}
 
 function submitSearch (event) {
   event.preventDefault();
   currentCity = cityInputEl.val();
 
-  // clearCurrentCityWeather();
+  clearCurrentWeather();
   getCoordinates();
 
   return;
 }
 
+function getPastCity (event) {
+  var element = event.target;
+
+  if (element.matches(".past-city")) {
+      currentCity = element.textContent;
+      
+      clearCurrentWeather();
+
+      var requestUrl = `https://api.openweathermap.org/data/2.5/weather?q=${currentCity}&appid=${APIkey}`;
+      
+      fetch(requestUrl)
+        .then(function (response) {
+          if (response.status >= 200 && response.status <= 299) {
+              return response.json();
+            } else {
+              throw Error(response.statusText);
+            }
+         })
+         .then(function(data) {
+              var cityInfo = {
+                  city: currentCity,
+                  lon: data.coord.lon,
+                  lat: data.coord.lat
+              }
+              return cityInfo;
+          })
+         .then(function (data) {
+              getApi(data);
+      })
+  }
+  return;
+}
+
+displaySearchHistory();
+
 searchBtn.on('click', submitSearch);
+
+clearBtn.on('click', clearHistory);
+
+pastSearchedEl.on('click', getPastCity);

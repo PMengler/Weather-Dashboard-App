@@ -27,54 +27,54 @@
               <label for="inputCity">Enter City Name:</label>
               <input type="city" class="form-control" id="city-name" aria-describedby="cityHelp">
             </div>
-            <button type="submit" class="btn btn-primary" id="fetch-button">Submit</button>
+            <button type="submit" class="btn btn-primary" id="search-button">Submit</button>
+            <button type="submit" class="btn btn-primary" id="clear-button">Clear List</button>
           </form>
         </div>
         <div class="col-9">
-          <div class="card text-dark bg-light mb-3">
-            <!-- <img src="..." class="card-img-top" alt="..."> -->
-            <div class="card-body">
+          <div class="" id="current-weather">
+            <!-- <div class="card-body">
               <h3 class="card-title">Current Weather</h3>
               <p class="card-text">Blah Blah</p>
               <p class="card-text"><small class="text-muted">updated 1s ago</small></p>
-            </div>
+            </div> -->
           </div>
-          <div class="row forecast">
-            <div class="card row-3 text-white bg-info mb-3" style="max-width: 18rem;">
-              <h3 class="card-header">One Day Out</h3>
+          <div class="row" id="forecastHeader">
+            <!-- <div class="card row-3 text-white bg-info mb-3" style="max-width: 18rem;">
+              <h5 class="card-header">One Day Out</h5>
               <div class="card-body">
-                <h5 class="card-title">Dark card title</h5>
+                <h6 class="card-title">Dark card title</h6>
                 <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
               </div>
             </div>
             <div class="card row-3 text-white bg-info mb-3" style="max-width: 18rem;">
-              <h3 class="card-header">Two Days Out</h3>
+              <h5 class="card-header">Two Days Out</h5>
               <div class="card-body">
-                <h5 class="card-title">Dark card title</h5>
+                <h6 class="card-title">Dark card title</h6>
                 <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
               </div>
             </div>
             <div class="card row-3 text-white bg-info mb-3" style="max-width: 18rem;">
-              <h3 class="card-header">Three Days Out</h3>
+              <h5 class="card-header">Three Days Out</h5>
               <div class="card-body">
-                <h5 class="card-title">Dark card title</h5>
+                <h6 class="card-title">Dark card title</h6>
                 <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
               </div>
             </div>
             <div class="card row-3 text-white bg-info mb-3" style="max-width: 18rem;">
-              <h3 class="card-header">Four Days Out</h3>
+              <h5 class="card-header">Four Days Out</h5>
               <div class="card-body">
-                <h5 class="card-title">Dark card title</h5>
+                <h6 class="card-title">Dark card title</h6>
                 <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
               </div>
             </div>
             <div class="card row-3 text-white bg-info mb-3" style="max-width: 18rem;">
-              <h3 class="card-header">Five Days Out</h3>
+              <h5 class="card-header">Five Days Out</h5>
               <div class="card-body">
-                <h5 class="card-title">Dark card title</h5>
+                <h6 class="card-title">Dark card title</h6>
                 <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
               </div>
-            </div>
+            </div> -->
           </div>
         </div>
       </div>
@@ -93,6 +93,9 @@
 
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script type= "module" src="https://cdn.jsdelivr.net/npm/dayjs@1.11.3/dayjs.min.js"
+    integrity="sha256-iu/zLUB+QgISXBLCW/mcDi/rnf4m4uEDO0wauy76x7U="
+    crossorigin="anonymous"></script>
     <script src="./assets/js/script.js"></script>
   </body>
 </html>

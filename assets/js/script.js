@@ -71,7 +71,7 @@ function getApi() {
   fetch(requestUrl)
     .then(function (response) {
       console.log(response.status)
-      return response.json();
+      return response.json().data;
     })
     .then(function (data) {
       //looping over the fetch response and inserting the URL of your repos into a list

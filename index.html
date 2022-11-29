@@ -22,14 +22,25 @@
       <div class="row">
         <div class="text-dark col-3" style="max-width: 25rem;">
           <form class="city">
+            
             <h2>Search for a City</h2>
+            
             <div class="form-group">
               <label for="inputCity">Enter City Name:</label>
               <input type="city" class="form-control" id="city-name" aria-describedby="cityHelp">
             </div>
-            <button type="submit" class="btn btn-primary" id="search-button">Submit</button>
-            <button type="submit" class="btn btn-primary" id="clear-button">Clear List</button>
+            
+            <button type="submit" class="btn btn-info" id="search-button">Submit</button>
+
+            <button type="submit" class="btn btn-info" id="clear-button">Clear List</button>
+            
           </form>
+
+
+          <div class="border-top border-info m-3" id="past-searched">
+            <!-- Past city searches will go here  -->
+          </div>
+
         </div>
         <div class="col-9">
           <div class="" id="current-weather">
@@ -39,8 +50,9 @@
               <p class="card-text"><small class="text-muted">updated 1s ago</small></p>
             </div> -->
           </div>
-          <div class="row" id="forecastHeader">
-            <div class="row-3" id="forecast"></div>
+          <div class="col">
+            <h3 id="forecastHeader"></h3>
+            <div class="row" id="forecast"></div>
             <!-- <div class="card row-3 text-white bg-info mb-3" style="max-width: 18rem;">
               <h5 class="card-header">One Day Out</h5>
               <div class="card-body">

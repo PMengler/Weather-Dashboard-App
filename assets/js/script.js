@@ -65,8 +65,9 @@ $(function () {
   });
 });
 
-//getApi function is called when the searchBtn is clicked
-
+// getApi function is called when the searchBtn is clicked
+// Subscribed to onecall on openweathermap for the API call below 
+// to make this simpler after reading documentation about it
 function getApi(data) {
   
   var requestUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${data.lat}&lon=${data.lon}&units=imperial&appid=${APIkey}`;
@@ -75,25 +76,24 @@ function getApi(data) {
       return response.json();
     })
     .then(function(data) {
-      console.log(data);
       
-      // Create Current Weather card
+      // create card for current weather
       var currentWeatherEl = $('#current-weather');
       currentWeatherEl.addClass('card text-white bg-dark mb-3');
 
-      // Current City name in current weather card
+      // searched city name in current weather card
       var cityNameEl = $('<h3>');
       cityNameEl.text(currentCity);
       currentWeatherEl.append(cityNameEl);
 
-      // Current date
+      // date
       var currentCityDate = Date.dt
       currentCityDate = dayjs(currentCityDate).format('MM/DD/YYYY');
       var currentDateEl = $('<span>');
       currentDateEl.text(` (${currentCityDate}) `);
       cityNameEl.append(currentDateEl);
 
-      // Add weather emoji for weather in current weather card
+      // weather emoji for weather in current weather card
       var currentWeatherEmoji =  data.current.weather[0].icon;
       var currentWeatherEmojiEl = $('<img>');
       currentWeatherEmojiEl.attr('src', "http://openweathermap.org/img/wn/" + currentWeatherEmoji + ".png");
@@ -141,7 +141,6 @@ function getApi(data) {
         var humidity;
         var uvi;
         
-        // debugger
         date = data.daily[i].dt
         date = dayjs(date[i]).add(i, 'day').format("MM/DD/YYYY");
 

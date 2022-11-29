@@ -1,10 +1,10 @@
-var APIkey = '394144fc80ac73b599b4202e469c4af9';
+var APIkey = '6c2804129ff3cbd5d74a5aa5eb917a4c';
 // var cityList = document.querySelector('ul');
 // var dailyWeather = document.querySelector('.card');
 // var fetchButton = document.getElementById('fetch-button');
 var searchBtn = $('#search-button');
 var clearBtn = $('#clear-button');
-var cityInputEl = $('city-name');
+var cityInputEl = $('#city-name');
 var pastSearchedEl = $('#past-searches')
 var currentCity;
 
@@ -48,6 +48,7 @@ $(function () {
     'Columbus',
     'Oklahoma City',
     'Salem',
+    'Portland',
     'Harrisburg',
     'Providence',
     'Columbia',
@@ -67,11 +68,11 @@ $(function () {
   });
 });
 
-//getApi function is called when the fetchButton is clicked
+//getApi function is called when the searchBtn is clicked
 
 function getApi(data) {
   
-  var requestUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${data.lat}&lon=${data.lon}&exclude=minutely,hourly,alerts&units=imperial&appid=${APIkey}`;
+  var requestUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${data.lat}&lon=${data.lon}&units=imperial&appid=${APIkey}`;
   fetch(requestUrl)
     .then(function(response) {
       return response.json();
@@ -81,7 +82,7 @@ function getApi(data) {
       
       // Create Current Weather card
       var currentWeatherEl = $('#current-weather');
-      currentWeatherEl.addClass('card text-dark bg-light mb-3');
+      currentWeatherEl.addClass('card text-white bg-dark mb-3');
 
       // Current City name in current weather card
       var cityNameEl = $('<h3>');
@@ -89,38 +90,38 @@ function getApi(data) {
       currentWeatherEl.append(cityNameEl);
 
       // Current date
-      var currentCityDate = data.dt
-      currentCityDate = dayjs().format('MM/DD/YYYY');
+      var currentCityDate = Date.dt
+      currentCityDate = dayjs(currentCityDate).format('MM/DD/YYYY');
       var currentDateEl = $('<span>');
-      currentDateEl.text(' (${currentCityDate}) ');
+      currentDateEl.text(` (${currentCityDate}) `);
       cityNameEl.append(currentDateEl);
 
       // Add weather emoji for weather in current weather card
-      var currentWeatherEmoji =  data.weather.icon;
+      var currentWeatherEmoji =  data.weather[0].icon;
       var currentWeatherEmojiEl = $('<img>');
       currentWeatherEmojiEl.attr('src', "http://openweathermap.org/img/wn/" + currentWeatherEmoji + ".png");
-      cityWeatherEl.append(currentWeatherEmojiEl);
+      cityNameEl.append(currentWeatherEmojiEl);
 
       // temperature
-      var currentTemp = data.current.temp;
+      var currentTemp = data.main.temp;
       var currentTempEl = $('<p>');
       currentTempEl.text(`Temp: ${currentTemp}°F`)
       currentWeatherEl.append(currentTempEl);
 
       // get current wind speed and display
-      var currentWind = data.current.wind_speed;
+      var currentWind = data.wind.speed;
       var currentWindEl = $('<p>')
       currentWindEl.text(`Wind: ${currentWind} mph`)
       currentWeatherEl.append(currentWindEl);
 
       // Humidity
-      var currentHumidity = data.current.humidity;
+      var currentHumidity = data.main.humidity;
       var currentHumidityEl = $('<p>');
       currentHumidityEl.text(`Humidity: ${currentHumidity}%`)
       currentWeatherEl.append(currentHumidityEl);
 
       // UV
-      var currentUv = data.current.uvi;
+      var currentUv = data.main.value;
       var currentUvEl = $('<p>');
       currentUvEl.text(`UV: ${currentUv}`)
       currentWeatherEl.append(currentUvEl);
@@ -136,36 +137,37 @@ function getApi(data) {
 
       // get key weather info from API data for five day forecast and display
       for (var i = 1; i <=5; i++) {
-          var date;
-          var temp;
-          var icon;
-          var wind;
-          var humidity;
+        var date;
+        var temp;
+        var icon;
+        var wind;
+        var humidity;
+        
+        // debugger
+        date = data.daily[i].dt;
+        date = dayjs().unix(date).format("MM/DD/YYYY");
 
-          date = data.daily[i].dt;
-          date = dayjs().unix(date).format("MM/DD/YYYY");
+        temp = data.daily[i].temp.day;
+        icon = data.daily[i].weather[0].icon;
+        wind = data.daily[i].wind.speed;
+        humidity = data.daily[i].humidity;
 
-          temp = data.daily[i].temp.day;
-          icon = data.daily[i].weather[0].icon;
-          wind = data.daily[i].wind_speed;
-          humidity = data.daily[i].humidity;
-
-          // create a card
-          var card = document.createElement('div');
-          card.classList.add('card', 'row-3', 'm-1', 'bg-info', 'text-white');
-          
-          // create card body and append
-          var cardBody = document.createElement('div');
-          cardBody.classList.add('card-body');
-          cardBody.innerHTML = `<h6>${date}</h6>
-                                <img src= "http://openweathermap.org/img/wn/${icon}.png"> </><br>
-                                  ${temp}°F<br>
-                                  ${wind} mph <br>
-                                  ${humidity}%`
-          
-          card.appendChild(cardBody);
-          fiveDayForecastEl.append(card);
-        }
+        // create a card
+        var card = document.createElement('div');
+        card.classList.add('card', 'row-3', 'mb-3', 'bg-info', 'text-white');
+        
+        // create card body and append
+        var cardBody = document.createElement('div');
+        cardBody.classList.add('card-body');
+        cardBody.innerHTML = `<h6>${date}</h6>
+                              <img src= "http://openweathermap.org/img/wn/${icon}.png"> </><br>
+                                ${temp}°F<br>
+                                ${wind} mph <br>
+                                ${humidity}%`
+        
+        card.appendChild(cardBody);
+        fiveDayForecastEl.append(card);
+      }
     })
   return;
 }
@@ -190,7 +192,7 @@ function displaySearchHistory() {
 
 // get city coordinates from Open Weather current weather data and send to One Call API
 function getCoordinates () {
-  var requestUrl = `https://api.openweathermap.org/data/2.5/weather?q=city&appid=${APIkey}`;
+  var requestUrl = `https://api.openweathermap.org/data/2.5/weather?q=${currentCity}&appid=${APIkey}`;
   var storedCities = JSON.parse(localStorage.getItem("cities")) || [];
 
   fetch(requestUrl)
@@ -248,7 +250,7 @@ function clearCurrentWeather () {
 
 function submitSearch (event) {
   event.preventDefault();
-  currentCity = cityInputEl.val();
+  currentCity = cityInputEl.val().trim();
 
   clearCurrentWeather();
   getCoordinates();
@@ -275,15 +277,15 @@ function getPastCity (event) {
             }
          })
          .then(function(data) {
-              var cityInfo = {
-                  city: currentCity,
-                  lon: data.coord.lon,
-                  lat: data.coord.lat
-              }
-              return cityInfo;
+            var cityInfo = {
+              city: currentCity,
+              lon: data.coord.lon,
+              lat: data.coord.lat
+            }
+            return cityInfo;
           })
          .then(function (data) {
-              getApi(data);
+            getApi(data);
       })
   }
   return;
